@@ -14,6 +14,13 @@
 (defn rand-value []
   {:foo (rand-str) :bar (rand-str) :baz (rand-str)})
 
+(defn wrapped-generate-stream
+  [result-seq writer opts]
+  (try
+    (json/generate-stream result-seq writer opts)
+    (catch Exception e
+      (println "yo"))))
+
 (defroutes app-routes
   (GET "/stream" []
        (let [result-seq (take 10000000 (repeatedly rand-value))]
@@ -30,6 +37,12 @@
                   (json/generate-stream result-seq w {:pretty true})
                   (catch Exception e
                     (println "yo"))))))))
+  (GET "/streaming-restored" []
+       (let [result-seq (take 10000000 (repeatedly rand-value))]
+         (rr/response
+           (piped-input-stream
+             #(let [w (io/make-writer % {:encoding "UTF-8"})]
+                (wrapped-generate-stream result-seq w {:pretty true}))))))
   (route/not-found "Not Found"))
 
 (def app

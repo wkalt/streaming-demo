@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [compojure "1.6.1"]
                  [ring/ring-core "1.7.1"]
-                 [org.clojure/core.async "0.4.490"]]
+                 [org.clojure/core.async "0.4.490"]
+                 [ring/ring-defaults "0.3.2"]]
   :plugins [[lein-ring "0.12.4"]]
   :ring {:handler streaming-demo.handler/app}
   :profiles
